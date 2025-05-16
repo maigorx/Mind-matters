@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firefighter Game - Extinguish Mental Problems</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e0f7fa, #fff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    nav {
+      width: 100%;
+      background-color: #0077b6;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffd166;
+    }
+
+    h1 {
+      margin: 20px 0;
+      color: #023047;
+      text-align: center;
+    }
+
+    .instructions {
+      font-size: 18px;
+      color: #333;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    canvas {
+      border: 4px solid #023047;
+      background-color: #fff;
+      border-radius: 12px;
+      display: none;
+      margin-top: 20px;
+      width: 400px;
+      height: 300px;
+    }
+
+    .score {
+      font-size: 18px;
+      color: #023047;
+      font-weight: bold;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #ffffffc5;
+      padding: 6px 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 16px;
+      color: #0077b6;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    #startButton, #gameOverMessage button {
+      margin-top: 20px;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0077b6;
+      color: white;
+      cursor: pointer;
+    }
+
+    #gameOverMessage {
+      display: none;
+      background-color: #ef476f;
+      padding: 20px;
+      border-radius: 12px;
+      color: white;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">← Back to Main Page</a>
+
+  <h1>Firefighter Game: Extinguish Mental Problems 🔥🧠💧</h1>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="resources.html">Resources</a>
+    <a href="mentalhealthinfo.html">Mental Health Info</a>
+  </nav>
+
+  <div class="instructions">
+    Use arrow keys to move. Avoid the red block! Stay calm, stay strong! 💪
+  </div>
+
+  <button id="startButton">Play Game</button>
+
+  <div id="gameOverMessage">Game Over! <br> <button onclick="startGame()">Play Again</button></div>
+
+  <canvas id="gameCanvas" width="400" height="300"></canvas>
+
+  <div class="score">Score: <span id="score">0</span></div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreDisplay = document.querySelector('.score');
+    const gameOverMessage = document.getElementById('gameOverMessage');
+    const startButton = document.getElementById('startButton');
+
+    let score = 0;
+    let gameSpeed = 2;
+    let gameRunning = false;
+
+    const player = {
+      x: 30,
+      y: canvas.height / 2 - 25,
+      width: 30,
+      height: 30,
+      speed: 4,
+      color: 'blue',
+      moveUp: false,
+      moveDown: false
+    };
+
+    const fire = {
+      x: canvas.width - 60,
+      y: player.y,
+      width: 30,
+      height: 30,
+      color: 'red'
+    };
+
+    function startGame() {
+      score = 0;
+      gameSpeed = 2;
+      gameRunning = true;
+      fire.x = canvas.width - 60;
+      fire.y = player.y;
+
+      startButton.style.display = 'none';
+      canvas.style.display = 'block';
+      scoreDisplay.style.display = 'block';
+      gameOverMessage.style.display = 'none';
+      document.getElementById('score').textContent = score;
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    function endGame() {
+      gameRunning = false;
+      gameOverMessage.style.display = 'block';
+      canvas.style.display = 'none';
+      scoreDisplay.style.display = 'none';
+    }
+
+    function gameLoop() {
+      if (!gameRunning) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      if (player.moveUp && player.y > 0) player.y -= player.speed;
+      if (player.moveDown && player.y < canvas.height - player.height) player.y += player.speed;
+
+      ctx.fillStyle = fire.color;
+      ctx.fillRect(fire.x, fire.y, fire.width, fire.height);
+      fire.x -= gameSpeed;
+
+      if (
+        player.x < fire.x + fire.width &&
+        player.x + player.width > fire.x &&
+        player.y < fire.y + fire.height &&
+        player.y + player.height > fire.y
+      ) {
+        endGame();
+        return;
+      }
+
+      if (fire.x + fire.width < 0) {
+        score += 10;
+        gameSpeed += 0.3;
+        document.getElementById('score').textContent = score;
+        fire.x = canvas.width - 40;
+        fire.y = player.y;
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') player.moveUp = true;
+      if (e.key === 'ArrowDown') player.moveDown = true;
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'ArrowUp') player.moveUp = false;
+      if (e.key === 'ArrowDown') player.moveDown = false;
+    });
+
+    startButton.addEventListener('click', startGame);
+  </script>
+
+</body>
+</html>
