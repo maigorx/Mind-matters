@@ -13,101 +13,98 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-```
-body {
-  background: linear-gradient(145deg, #e0f7fa, #fff);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  position: relative;
-}
+    body {
+      background: linear-gradient(145deg, #e0f7fa, #fff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
 
-nav {
-  width: 100%;
-  background-color: #0077b6;
-  padding: 10px 0;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
+    nav {
+      width: 100%;
+      background-color: #0077b6;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
 
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  transition: 0.3s;
-}
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
 
-nav a:hover {
-  color: #ffd166;
-}
+    nav a:hover {
+      color: #ffd166;
+    }
 
-h1 {
-  margin: 20px 0;
-  color: #023047;
-  text-align: center;
-}
+    h1 {
+      margin: 20px 0;
+      color: #023047;
+      text-align: center;
+    }
 
-.instructions {
-  font-size: 18px;
-  color: #333;
-  margin: 15px 0;
-  text-align: center;
-}
+    .instructions {
+      font-size: 18px;
+      color: #333;
+      margin: 15px 0;
+      text-align: center;
+    }
 
-canvas {
-  border: 3px solid #023047;
-  background-color: #ffffff;
-  border-radius: 12px;
-  display: none;
-}
+    canvas {
+      border: 3px solid #023047;
+      background-color: #ffffff;
+      border-radius: 12px;
+      display: none;
+    }
 
-.score {
-  font-size: 20px;
-  color: #023047;
-  font-weight: bold;
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background: #ffffffc5;
-  padding: 8px 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  display: none;
-}
+    .score {
+      font-size: 20px;
+      color: #023047;
+      font-weight: bold;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: #ffffffc5;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+    }
 
-.back-link {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 16px;
-  color: #0077b6;
-  text-decoration: none;
-}
+    .back-link {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 16px;
+      color: #0077b6;
+      text-decoration: none;
+    }
 
-.back-link:hover {
-  text-decoration: underline;
-}
+    .back-link:hover {
+      text-decoration: underline;
+    }
 
-#startButton, #gameOverMessage {
-  margin-top: 20px;
-  font-size: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background-color: #0077b6;
-  color: white;
-  cursor: pointer;
-}
+    #startButton, #gameOverMessage {
+      margin-top: 20px;
+      font-size: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0077b6;
+      color: white;
+      cursor: pointer;
+    }
 
-#gameOverMessage {
-  display: none;
-  background-color: #ef476f;
-}
-```
-
+    #gameOverMessage {
+      display: none;
+      background-color: #ef476f;
+    }
   </style>
 </head>
 <body>
@@ -127,11 +124,11 @@ canvas {
     Use the arrow keys to move and space to shoot water at the fire. Stay calm, stay strong! 💪
   </div>
 
-<button id="startButton">Play Game</button>
+  <button id="startButton">Play Game</button>
 
   <div id="gameOverMessage">Game Over! <br> <button onclick="startGame()">Play Again</button></div>
 
-<canvas id="gameCanvas" width="800" height="600"></canvas>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
 
   <div class="score">Score: <span id="score">0</span></div>
 
