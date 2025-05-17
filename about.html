@@ -54,6 +54,7 @@
       color: #333;
       margin: 15px 0;
       text-align: center;
+      max-width: 600px;
     }
 
     canvas {
@@ -102,6 +103,11 @@
       background-color: #0077b6;
       color: white;
       cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #startButton:hover, #gameOverMessage button:hover {
+      background-color: #005f86;
     }
 
     #gameOverMessage {
@@ -112,13 +118,22 @@
       color: white;
       text-align: center;
     }
+
+    .footer-note {
+      margin-top: 30px;
+      font-size: 16px;
+      color: #555;
+      text-align: center;
+      max-width: 500px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
 
   <a href="index.html" class="back-link">← Back to Main Page</a>
 
-  <h1>Firefighter Game: Extinguish Mental Problems 🔥🧠💧</h1>
+  <h1>🔥 Firefighter Game: Extinguish Mental Problems 🧠💧</h1>
 
   <nav>
     <a href="index.html">Home</a>
@@ -128,7 +143,9 @@
   </nav>
 
   <div class="instructions">
-    Use arrow keys to move. Avoid the red block! Stay calm, stay strong! 💪
+    This anti-stress mini-game is only available on PC 💻 and is controlled using the <strong>Arrow Keys</strong> ⬆️⬇️. Move your firefighter to dodge the stress blocks (red blocks = bad vibes) and keep your cool. 🌊🧘‍♀️
+    <br /><br />
+    Designed to help you reset and refresh your mind while spreading awareness about mental wellness. 🧠✨
   </div>
 
   <button id="startButton">Play Game</button>
@@ -138,6 +155,10 @@
   <canvas id="gameCanvas" width="400" height="300"></canvas>
 
   <div class="score">Score: <span id="score">0</span></div>
+
+  <div class="footer-note">
+    💡 This is not just a game — it's a reminder to stay mindful and dodge life’s little stressors one step at a time. 🚒❤️
+  </div>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
@@ -222,7 +243,7 @@
         gameSpeed += 0.3;
         document.getElementById('score').textContent = score;
         fire.x = canvas.width - 40;
-        fire.y = player.y;
+        fire.y = Math.random() * (canvas.height - fire.height);
       }
 
       requestAnimationFrame(gameLoop);
