@@ -165,6 +165,7 @@
 <div id="chat-toggle" onclick="toggleChat()" style="position:fixed;bottom:20px;left:20px;width:60px;height:30px;background:#4A148C;color:#fff;text-align:center;line-height:30px;border-radius:15px;cursor:pointer;z-index:9999;font-family:sans-serif;">Chat</div>
 
 <div id="chat-box" style="position:fixed;bottom:60px;left:20px;width:300px;height:400px;background:#fff;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);padding:10px;display:flex;flex-direction:column;z-index:9999;font-family:sans-serif;">
+  <div style="flex:1;overflow-y:auto;margin-bottom:10px;cursor:move;background:#E1BEE7;padding:5px;border-radius:5px;text-align:center;" id="chat-header">Drag here</div>
   <div style="flex:1;overflow-y:auto;margin-bottom:10px;" id="messages"></div>
   <input id="user-input" placeholder="Type a message..." style="padding:10px;border-radius:5px;border:1px solid #ccc;margin-bottom:5px;"/>
   <button onclick="sendMessage()" style="padding:10px;border:none;background:#4A148C;color:#fff;border-radius:5px;cursor:pointer;">Send</button>
@@ -186,17 +187,19 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
+  const messagesRef = db.ref("messages");
+  const messagesEl = document.getElementById("messages");
+
+  // Display all past messages on load
+  messagesRef.once("value", snapshot => {
+    snapshot.forEach(child => {
+      displayMessage(child.val());
+    });
+  });
+
   // Display messages in real time
-  db.ref("messages").on("child_added", function(snapshot) {
-    const message = snapshot.val();
-    const msgElement = document.createElement("div");
-    msgElement.textContent = message.name + ": " + message.text;
-    msgElement.style.marginBottom = "8px";
-    msgElement.style.padding = "6px 10px";
-    msgElement.style.background = "#F3E5F5";
-    msgElement.style.borderRadius = "5px";
-    document.getElementById("messages").appendChild(msgElement);
-    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+  messagesRef.on("child_added", function(snapshot) {
+    displayMessage(snapshot.val());
   });
 
   // Prompt for name
@@ -212,6 +215,18 @@
     }
   }
 
+  // Function to display message
+  function displayMessage(message) {
+    const msgElement = document.createElement("div");
+    msgElement.textContent = message.name + ": " + message.text;
+    msgElement.style.marginBottom = "8px";
+    msgElement.style.padding = "6px 10px";
+    msgElement.style.background = "#F3E5F5";
+    msgElement.style.borderRadius = "5px";
+    messagesEl.appendChild(msgElement);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
   // Minimize/maximize chat
   function toggleChat() {
     const chatBox = document.getElementById("chat-box");
@@ -224,6 +239,58 @@
 
   // Start with chat open
   document.getElementById("chat-box").style.display = "flex";
+
+  // Make chat box draggable
+  dragElement(document.getElementById("chat-box"));
+
+  function dragElement(elmnt) {
+    const header = document.getElementById("chat-header");
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (header) {
+      header.onmousedown = dragMouseDown;
+      header.ontouchstart = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      if (e.type === 'touchstart') {
+        pos3 = e.touches[0].clientX;
+        pos4 = e.touches[0].clientY;
+        document.ontouchend = closeDragElement;
+        document.ontouchmove = elementDrag;
+      } else {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+      }
+    }
+
+    function elementDrag(e) {
+      if (e.type === 'touchmove') {
+        e.preventDefault();
+        pos1 = pos3 - e.touches[0].clientX;
+        pos2 = pos4 - e.touches[0].clientY;
+        pos3 = e.touches[0].clientX;
+        pos4 = e.touches[0].clientY;
+      } else {
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+      }
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+      document.ontouchend = null;
+      document.ontouchmove = null;
+    }
+  }
 </script>
 
 <!-- Firebase Database Rules for Global Chat -->
@@ -235,6 +302,7 @@
   }
 }
 -->
+
 
 
 
