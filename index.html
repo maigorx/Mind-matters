@@ -154,7 +154,53 @@
       </ul>
       <p>Leave a kind message for someone: <a href="#">Link 💌</a></p>
     </section>
- 
+
+    <!-- Chat Widget Code Starts -->
+<!-- Basic Live Chat Widget Using JavaScript + Firebase (For Developers) -->
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<div id="chat-box" style="position:fixed;bottom:20px;left:20px;width:300px;height:400px;background:#fff;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);padding:10px;display:flex;flex-direction:column;z-index:9999;">
+  <div style="flex:1;overflow-y:auto;" id="messages"></div>
+  <input id="user-input" placeholder="Type a message..." style="margin-top:5px;padding:10px;border-radius:5px;border:1px solid #ccc;" />
+  <button onclick="sendMessage()" style="margin-top:5px;padding:10px;border:none;background:#333;color:#fff;border-radius:5px;">Send</button>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  db.ref("messages").on("child_added", function(snapshot) {
+    const message = snapshot.val();
+    const msgElement = document.createElement("div");
+    msgElement.textContent = message.text;
+    document.getElementById("messages").appendChild(msgElement);
+  });
+
+  function sendMessage() {
+    const input = document.getElementById("user-input");
+    const text = input.value;
+    if (text.trim() !== "") {
+      db.ref("messages").push({ text });
+      input.value = "";
+    }
+  }
+</script>
+<!-- Chat Widget Code Ends -->
+
+</body>
+
  <footer>
    <nav>
      <a href ="info.html">About</a>
