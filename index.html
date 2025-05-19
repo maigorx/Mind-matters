@@ -155,23 +155,28 @@
       <p>Leave a kind message for someone: <a href="#">Link 💌</a></p>
     </section>
 
-    <!-- Chat Widget Code Starts -->
 <!-- Basic Live Chat Widget Using JavaScript + Firebase (For Developers) -->
 
+<!-- 1. Add Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-<div id="chat-box" style="position:fixed;bottom:20px;left:20px;width:300px;height:400px;background:#fff;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);padding:10px;display:flex;flex-direction:column;z-index:9999;">
-  <div style="flex:1;overflow-y:auto;" id="messages"></div>
-  <input id="user-input" placeholder="Type a message..." style="margin-top:5px;padding:10px;border-radius:5px;border:1px solid #ccc;" />
-  <button onclick="sendMessage()" style="margin-top:5px;padding:10px;border:none;background:#333;color:#fff;border-radius:5px;">Send</button>
+<!-- 2. HTML Chat UI -->
+<div id="chat-toggle" onclick="toggleChat()" style="position:fixed;bottom:20px;left:20px;width:60px;height:30px;background:#4A148C;color:#fff;text-align:center;line-height:30px;border-radius:15px;cursor:pointer;z-index:9999;font-family:sans-serif;">Chat</div>
+
+<div id="chat-box" style="position:fixed;bottom:60px;left:20px;width:300px;height:400px;background:#fff;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.2);padding:10px;display:flex;flex-direction:column;z-index:9999;font-family:sans-serif;">
+  <div style="flex:1;overflow-y:auto;margin-bottom:10px;" id="messages"></div>
+  <input id="user-input" placeholder="Type a message..." style="padding:10px;border-radius:5px;border:1px solid #ccc;margin-bottom:5px;"/>
+  <button onclick="sendMessage()" style="padding:10px;border:none;background:#4A148C;color:#fff;border-radius:5px;cursor:pointer;">Send</button>
 </div>
 
+<!-- 3. Firebase + Chat Logic -->
 <script>
+  // Firebase config (replace with your actual Firebase project info)
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
     projectId: "YOUR_PROJECT_ID",
     storageBucket: "YOUR_PROJECT_ID.appspot.com",
     messagingSenderId: "SENDER_ID",
@@ -181,23 +186,57 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
+  // Display messages in real time
   db.ref("messages").on("child_added", function(snapshot) {
     const message = snapshot.val();
     const msgElement = document.createElement("div");
-    msgElement.textContent = message.text;
+    msgElement.textContent = message.name + ": " + message.text;
+    msgElement.style.marginBottom = "8px";
+    msgElement.style.padding = "6px 10px";
+    msgElement.style.background = "#F3E5F5";
+    msgElement.style.borderRadius = "5px";
     document.getElementById("messages").appendChild(msgElement);
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
   });
 
+  // Prompt for name
+  let userName = prompt("Enter your name:") || "Anonymous";
+
+  // Send message
   function sendMessage() {
     const input = document.getElementById("user-input");
     const text = input.value;
     if (text.trim() !== "") {
-      db.ref("messages").push({ text });
+      db.ref("messages").push({ name: userName, text });
       input.value = "";
     }
   }
+
+  // Minimize/maximize chat
+  function toggleChat() {
+    const chatBox = document.getElementById("chat-box");
+    if (chatBox.style.display === "none") {
+      chatBox.style.display = "flex";
+    } else {
+      chatBox.style.display = "none";
+    }
+  }
+
+  // Start with chat open
+  document.getElementById("chat-box").style.display = "flex";
 </script>
-<!-- Chat Widget Code Ends -->
+
+<!-- Firebase Database Rules for Global Chat -->
+<!-- Set these in your Firebase console to make chat work globally:
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+-->
+
+
 
 </body>
 
