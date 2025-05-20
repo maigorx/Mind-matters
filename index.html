@@ -207,11 +207,9 @@
     if (text.trim() !== "") {
       db.ref("messages").push({ name: userName, text });
       input.value = "";
-      if (text.toLowerCase().includes("hello") || text.toLowerCase().includes("anyone")) {
-        const aiReply = await getAIResponse(text);
-        if (aiReply) {
-          db.ref("messages").push({ name: "AI Buddy 🤖", text: aiReply });
-        }
+      const aiReply = await getAIResponse(text);
+      if (aiReply) {
+        db.ref("messages").push({ name: "AI Buddy 🤖", text: aiReply });
       }
     }
   }
@@ -222,7 +220,7 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer YOUR_OPENAI_API_KEY"
+          "Authorization": `Bearer ${gptKey}`
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -295,6 +293,9 @@
       document.ontouchmove = null;
     }
   }
+
+  // Define your GPT API key here
+  const gptKey = "YOUR_OPENAI_API_KEY";
 </script>
 
 <!-- Firebase Database Rules for Global Chat -->
@@ -307,7 +308,8 @@
 }
 -->
 
-<!-- Notes: Replace YOUR_API_KEY and YOUR_PROJECT_ID and YOUR_OPENAI_API_KEY with your actual keys -->
+<!-- Notes: Replace YOUR_API_KEY and YOUR_PROJECT_ID with your actual Firebase credentials. Replace YOUR_OPENAI_API_KEY with your OpenAI API key. -->
+
 </body>
 
  <footer>
