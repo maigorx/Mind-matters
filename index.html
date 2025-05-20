@@ -155,7 +155,7 @@
       <p>Leave a kind message for someone: <a href="#">Link 💌</a></p>
     </section>
 
-<!-- Basic Live Chat Widget Using JavaScript + Firebase (For Developers) -->
+<!-- Basic Live Chat Widget Using JavaScript + Firebase + OpenAI (AI Responds) -->
 
 <!-- 1. Add Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -171,9 +171,8 @@
   <button onclick="sendMessage()" style="padding:10px;border:none;background:#4A148C;color:#fff;border-radius:5px;cursor:pointer;">Send</button>
 </div>
 
-<!-- 3. Firebase + Chat Logic -->
+<!-- 3. Firebase + Chat + AI Logic -->
 <script>
-  // Firebase config (replace with your actual Firebase project info)
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -187,60 +186,65 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  const messagesRef = db.ref("messages");
-  const messagesEl = document.getElementById("messages");
-
-  // Display all past messages on load
-  messagesRef.once("value", snapshot => {
-    snapshot.forEach(child => {
-      displayMessage(child.val());
-    });
-  });
-
   // Display messages in real time
-  messagesRef.on("child_added", function(snapshot) {
-    displayMessage(snapshot.val());
+  db.ref("messages").on("child_added", function(snapshot) {
+    const message = snapshot.val();
+    const msgElement = document.createElement("div");
+    msgElement.textContent = message.name + ": " + message.text;
+    msgElement.style.marginBottom = "8px";
+    msgElement.style.padding = "6px 10px";
+    msgElement.style.background = message.name === "AI Buddy 🤖" ? "#E8F5E9" : "#F3E5F5";
+    msgElement.style.borderRadius = "5px";
+    document.getElementById("messages").appendChild(msgElement);
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
   });
 
-  // Prompt for name
   let userName = prompt("Enter your name:") || "Anonymous";
 
-  // Send message
-  function sendMessage() {
+  async function sendMessage() {
     const input = document.getElementById("user-input");
     const text = input.value;
     if (text.trim() !== "") {
       db.ref("messages").push({ name: userName, text });
       input.value = "";
+      if (text.toLowerCase().includes("hello") || text.toLowerCase().includes("anyone")) {
+        const aiReply = await getAIResponse(text);
+        if (aiReply) {
+          db.ref("messages").push({ name: "AI Buddy 🤖", text: aiReply });
+        }
+      }
     }
   }
 
-  // Function to display message
-  function displayMessage(message) {
-    const msgElement = document.createElement("div");
-    msgElement.textContent = message.name + ": " + message.text;
-    msgElement.style.marginBottom = "8px";
-    msgElement.style.padding = "6px 10px";
-    msgElement.style.background = "#F3E5F5";
-    msgElement.style.borderRadius = "5px";
-    messagesEl.appendChild(msgElement);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+  async function getAIResponse(userInput) {
+    try {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_OPENAI_API_KEY"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: userInput }],
+          temperature: 0.8
+        })
+      });
+      const data = await res.json();
+      return data.choices[0]?.message?.content || "Oops, something went wrong!";
+    } catch (error) {
+      console.error("AI error:", error);
+      return null;
+    }
   }
 
-  // Minimize/maximize chat
   function toggleChat() {
     const chatBox = document.getElementById("chat-box");
-    if (chatBox.style.display === "none") {
-      chatBox.style.display = "flex";
-    } else {
-      chatBox.style.display = "none";
-    }
+    chatBox.style.display = chatBox.style.display === "none" ? "flex" : "none";
   }
 
-  // Start with chat open
   document.getElementById("chat-box").style.display = "flex";
 
-  // Make chat box draggable
   dragElement(document.getElementById("chat-box"));
 
   function dragElement(elmnt) {
@@ -294,7 +298,7 @@
 </script>
 
 <!-- Firebase Database Rules for Global Chat -->
-<!-- Set these in your Firebase console to make chat work globally:
+<!--
 {
   "rules": {
     ".read": true,
@@ -303,9 +307,7 @@
 }
 -->
 
-
-
-
+<!-- Notes: Replace YOUR_API_KEY and YOUR_PROJECT_ID and YOUR_OPENAI_API_KEY with your actual keys -->
 </body>
 
  <footer>
