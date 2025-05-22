@@ -156,23 +156,41 @@
       <p>Leave a kind message for someone: <a href="#">Link 💌</a></p>
     </section>
 
-    <section>
-      <h2>Live Mentor Chat 🧠</h2>
+ <section>
+      <h2>Leave a Kind Message or Give Feedback 💌</h2>
       <div id="chat-box"></div>
       <div id="chat-input">
-        <input type="text" id="userInput" placeholder="Ask your mentor anything..." style="flex: 1; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" id="userInput" placeholder="Type something kind..." style="flex: 1; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
         <button onclick="sendMessage()" style="padding: 0.5rem 1rem; background-color: #7E57C2; color: white; border: none; border-radius: 5px;">Send</button>
       </div>
+      <p id="sent-msg" style="display:none;">Sent ✅</p>
     </section>
+  </main>
+  <footer>
+    <nav><a href ="info.html">About</a></nav>
+  </footer>
+  <script>
+    const inputField = document.getElementById("userInput");
+    const chatInputDiv = document.getElementById("chat-input");
+    let hasSent = false;
+
+    function sendMessage() {
+      const msg = inputField.value.trim();
+      if (msg !== "" && !hasSent) {
+        document.getElementById("chat-box").innerText = msg;
+        document.getElementById("sent-msg").style.display = "block";
+        chatInputDiv.style.display = "none";
+        hasSent = true;
+      }
+    }
+
+    inputField.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
 
   </main>
-
-  <footer>
-    <nav>
-      <a href ="info.html">About</a>
-    </nav>
-  </footer>
-
-  </script>
 </body>
 </html>
