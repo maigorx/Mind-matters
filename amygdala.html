@@ -6,7 +6,7 @@
   <title>The Brain And How It Works</title>
   <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Mind_Logo.svg/120px-Mind_Logo.svg.png" />
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
-  <style>
+ <style>
     * {
       box-sizing: border-box;
     }
@@ -25,22 +25,19 @@
       padding: 1.5rem 2rem;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
     }
 
-    header img {
-      width: 120px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: contain;
-    }
+     header img {
+    width: 120px;
+    height: 110px;
+    border-radius: 50%;
+    margin-right: 1rem;
+  }
 
     nav {
+      display: flex;
+      justify-content: center;
       margin-top: 1rem;
-      text-align: center;
     }
 
     nav a {
@@ -69,11 +66,6 @@
       font-size: 1.8rem;
       color: #5a189a;
       margin-top: 1.5rem;
-    }
-
-    h3 {
-      margin-top: 1.5rem;
-      color: #8b2d92;
     }
 
     p {
@@ -106,7 +98,7 @@
 
     footer {
       background: #d6336c;
-      color: #ff9de2;
+      color: #ff9de2
       padding: 1rem;
       text-align: center;
       position: fixed;
@@ -124,27 +116,20 @@
       text-decoration: underline;
     }
 
-    img {
-      max-width: 100%;
-      border-radius: 1rem;
-      margin-top: 1rem;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+   @media screen and (max-width: 768px) {
+    header {
+      flex-direction: column;
+      text-align: center;
     }
 
-    @media screen and (max-width: 768px) {
-      header {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      header img {
-        margin-bottom: 1rem;
-      }
-
-      main {
-        padding: 0 1rem;
-      }
+    header img {
+      margin-bottom: 1rem;
     }
+
+    main {
+      padding: 0 1rem;
+    }
+  }
   </style>
 </head>
 <body>
@@ -214,7 +199,7 @@
     </p>
 
   
-
+  
     <a href="index.html" class="back-link">← Back to Main Page</a>
   </div>
 
